@@ -4,6 +4,7 @@ var Promise = require('bluebird');
 var request = require('request-promise');
 var tough = require('tough-cookie');
 var domainParser = require('parse-domain');
+var knownTlds = require("../lib/tld");
 
 router.get('/search', function (req, res) {
 
@@ -16,13 +17,17 @@ router.get('/search', function (req, res) {
     var domain = domainParser(req.query.query);
 
     if (!domain) {
-        domain = req.query.query.replace(/\.+$/, '');
-        domain = domainParser(domain + '.com');
+        // check if there is any dot in string or no dot in the string
+        if ((req.query.query.indexOf('.') === (req.query.query.length - 1)) || (req.query.query.indexOf('.') === -1)) {
+            domain = req.query.query.replace(/\.+$/, '');
+            domain = domainParser(domain + '.com');
+        } else {
+            return res.status(500).json({'error': 'Invalid TLD'});
+        }
     }
 
     var FQDN = domain.domain + '.' + domain.tld;
     domain = domain.domain;
-
 
     var cookie = new tough.Cookie({
         key: "currency",
@@ -32,7 +37,7 @@ router.get('/search', function (req, res) {
     var cookiejar = request.jar();
     cookiejar.setCookie(cookie, 'https://my.godaddy.com');
 
-    const urls = [
+    var urls = [
         {// lookup the exact domain
             uri: 'https://my.godaddy.com/domainsapi/v1/search/exact?q=' + FQDN + '&key=dpp_search&pc=&ptl=',
             jar: cookiejar
