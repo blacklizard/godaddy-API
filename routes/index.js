@@ -87,7 +87,7 @@ router.get('/search', function (req, res) {
         });
 
         var result = {
-            'domian': exact.ExactMatchDomain.Fqdn,
+            'domain': exact.ExactMatchDomain.Fqdn,
             'is_available': isDomainAvailable,
             'currency': currency,
             'price': price,
