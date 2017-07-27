@@ -12,3 +12,5 @@ Parameter | Required | Default | Desc
 `currency` | optional | `usd` | Currency of the result
 
 #### Demo
+
+`http://gpco.icodewithlizard.com/search?query=example`

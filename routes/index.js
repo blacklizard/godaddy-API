@@ -10,7 +10,7 @@ router.get('/search', function (req, res) {
     var currency = req.query.currency || 'usd';
 
     if (!req.query.query) {
-        return res.status(422).json({'currency': 'currency parameter is required'});
+        return res.status(422).json({'query': 'query parameter is required'});
     }
 
     var domain = domainParser(req.query.query);
